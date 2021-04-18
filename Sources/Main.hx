@@ -1,7 +1,6 @@
 package;
 
 
-import states.SpaceInvader;
 import kha.WindowMode;
 import com.framework.Simulation;
 import kha.System;
@@ -16,7 +15,7 @@ class Main {
 			var windowsOptions=new WindowOptions("Clase1",0,0,1280,720,null,true,WindowFeatures.FeatureResizable,WindowMode.Windowed);
 		var frameBufferOptions=new FramebufferOptions();
 		System.start(new SystemOptions("Clase1",1280,720,windowsOptions,frameBufferOptions), function (w) {
-			new Simulation(SpaceInvader,1280,720,1);
+			new Simulation(GameState,1280,720,1);
         });
     }
 }

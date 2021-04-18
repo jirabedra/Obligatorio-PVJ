@@ -1,62 +1,54 @@
 package states;
 
-import com.gEngine.GEngine;
-import com.framework.utils.Random;
-import kha.math.FastVector2;
-import com.gEngine.display.Sprite;
-import com.loading.basicResources.ImageLoader;
-import com.loading.Resources;
+import js.html.Console;
+import gameObjects.Frame;
+import com.collision.platformer.ICollider;
+import com.collision.platformer.CollisionEngine;
+import gameObjects.Invader;
+import gameObjects.Player;
 import com.framework.utils.State;
 
+import com.gEngine.display.Layer;
+import com.gEngine.helpers.RectangleDisplay;
+
 class GameState extends State {
+	static var screenWidth: Int = 1280;
+	static var screenHeight: Int = 720;
 
-    var screenWidth:Int;
-    var screenHeight:Int;
-    private var ballRadio = 20;
-    var ball:Sprite;
-    var velocityY:Float=0;
-    var gravity:Float=2000;
-    override function load(resources:Resources) {
-        resources.add(new ImageLoader("ball"));
-        screenWidth =  1280;
-        screenHeight = 720;
+	var simulationLayer: Layer;
+	var player: Player;
+	var invader: Invader;
+	var frame: Frame;
+
+	var display: RectangleDisplay;
+	
+	override function init() {
+		simulationLayer = new Layer();
+		stage.addChild(simulationLayer);
+		player = new Player(100, 100, simulationLayer);
+		addChild(player);
+
+		invader = new Invader(300, 300, simulationLayer);
+		addChild(invader);
+
+		frame = new Frame(screenHeight, screenWidth);
+	}
+
+	override function update(dt:Float) {
+		super.update(dt);
+
+		frame.update(dt);
+		frame.collide(player.collision, playerVsFrame);
+		
+        CollisionEngine.collide(player.collision,invader.collision,playerVsInvader);
+	}
+
+    function playerVsInvader(playerC:ICollider,invaderC:ICollider) {
+      ///  player.die();
     }
-    
-    override function init() {
-        ball=new Sprite("ball");
-        ball.x=100;
-        ball.y=100;
-        ballRadio = Std.int(ball.width()*0.5);
-        ball.offsetX = -ball.width() * 0.5;
-        ball.offsetY = -ball.height() * 0.5;
-        stage.addChild(ball);
-    }
-    var signX:Int=1;
-    var signY:Int=1;
-    override function update(dt:Float) {
-       
-        velocityY += gravity*dt;
 
-        ball.x += 600*dt*signX;
-        ball.y += velocityY*dt;
+	function playerVsFrame(playerC:ICollider,invaderC:ICollider){
+		Console.log("Collided with edge");
+	}
 
-       if(ball.x+ballRadio >= screenWidth || ball.x-ballRadio <= 0){
-           signX *= -1;
-       }
-
-        if(ball.y+ballRadio >= screenHeight && velocityY > 0 ){
-            velocityY *= -0.5;
-            var deltaY = (ball.y+ballRadio)-screenHeight;
-            ball.y = (screenHeight-ballRadio)-deltaY;
-            //ball.y=screenHeight-ballRadio;
-            //velocityY=-1500;
-        }
-        
-       
-
-        super.update(dt);
-    }
-    override function render() {
-        super.render();
-    }
 }

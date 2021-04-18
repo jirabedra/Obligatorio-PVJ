@@ -2,7 +2,6 @@ package gameObjects;
 
 import com.collision.platformer.CollisionBox;
 import com.gEngine.display.Layer;
-import com.helpers.Rectangle;
 import com.gEngine.helpers.RectangleDisplay;
 import com.framework.utils.Entity;
 
