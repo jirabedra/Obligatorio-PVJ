@@ -5,7 +5,7 @@
             "request": "launch",
             "type": "pwa-chrome",
             "cwd": "${workspaceFolder}/build/debug-html5",
-            "runtimeExecutable": "c:\\Users\\alvar\\.vscode\\extensions\\kodetech.kha-21.3.8\\electron\\electron.exe",
+            "runtimeExecutable": "${env:USERPROFILE}\\AppData\\Roaming\\npm\\node_modules\\electron\\dist\\electron.exe",
             "runtimeArgs": [
                 "--no-sandbox",
                 "."
@@ -26,3 +26,4 @@
     ],
     "compounds": []
 }
+

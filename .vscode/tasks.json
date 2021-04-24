@@ -6,7 +6,7 @@
         {
             "label": "Kha: Build for Debug HTML5",
             "type": "shell",
-            "command": "node '${env:USERPROFILE}\\Documents\\code\\Kha\\make' debug-html5"
+            "command": "node 'D:\\Documentos\\ORT\\PVJ\\Kha\\Kha\\make' debug-html5"
         }
     ]
 }

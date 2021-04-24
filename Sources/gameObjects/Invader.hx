@@ -25,6 +25,7 @@ class Invader extends Entity {
         collision.x=x;
         collision.y=y;
         collision.staticObject=true;
+
 	}
 
 	override function update(dt:Float) {
