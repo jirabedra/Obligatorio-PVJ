@@ -43,13 +43,14 @@ class BouncingBall extends Entity {
 		collision.userData = this;
 
         velocity = new FastVector2(1,1);
+        velocity.setFrom(velocity.normalized());
 
 	}
 
 	override function update(dt:Float) {
 		super.update(dt);
 		collision.update(dt);
-        velocity.setFrom(velocity.normalized());
+
 
         collision.velocityX = velocity.x * speed;
 		collision.velocityY = velocity.y * speed;

@@ -10,6 +10,9 @@ import com.collision.platformer.ICollider;
 import com.collision.platformer.CollisionGroup;
 import com.collision.platformer.CollisionEngine;
 
+import com.loading.basicResources.FontLoader;
+import com.loading.basicResources.JoinAtlas;
+import com.gEngine.display.Text;
 import gameObjects.Player;
 import gameObjects.Bullet;
 import gameObjects.BouncingBall;
@@ -23,6 +26,7 @@ class GameState extends State {
 	static var screenWidth: Int = 1280;
 	static var screenHeight: Int = 720;
 
+	var scoreText : Text;
 	var simulationLayer: Layer;
 	var player: Player;
 
@@ -30,7 +34,11 @@ class GameState extends State {
 	var frame: Frame;
 
 	var display: RectangleDisplay;
+
+	var gottaSpawnNewBalls = false;
+	var nextSpawnPosition : FastVector2;
 	
+	var score = 0;
 	override function init() {
 		simulationLayer = new Layer();
 		stage.addChild(simulationLayer);
@@ -46,6 +54,13 @@ class GameState extends State {
 
 		frame = new Frame(screenHeight, screenWidth);
 
+		scoreText=new Text("Kenney_Thick");
+		scoreText.smooth=true;
+		scoreText.x = screenWidth-250;
+		scoreText.y = 25;
+		scoreText.text="Score " + score; 
+		stage.addChild(scoreText);
+
 	}
 
 
@@ -59,6 +74,9 @@ class GameState extends State {
         resources.add(new ImageLoader("ball"));
         screenWidth = GEngine.i.width;
         screenHeight = GEngine.i.height;
+		var atlas=new JoinAtlas(512,512);
+		atlas.add(new FontLoader("Kenney_Thick",20));
+		resources.add(atlas);
     }
 
 	override function update(dt:Float) {
@@ -70,6 +88,13 @@ class GameState extends State {
 		
 		CollisionEngine.overlap(player.collision, enemyCollision, playerVsEnemy);
 		CollisionEngine.collide(player.bulletsCollision, enemyCollision, bulletVsBall);
+
+		if(gottaSpawnNewBalls){
+			gottaSpawnNewBalls = false;
+			spawnBall(nextSpawnPosition.x, nextSpawnPosition.y, new FastVector2(0,-1));
+			spawnBall(nextSpawnPosition.x, nextSpawnPosition.y, new FastVector2(1,-1));
+			spawnBall(nextSpawnPosition.x, nextSpawnPosition.y, new FastVector2(-1,-1));
+		}
 	}
 
 
@@ -82,8 +107,10 @@ class GameState extends State {
 		var ball:BouncingBall=cast ballC.userData;
 		bullet.die();
 		ball.die();
-		//La linea siguiente es la que causa quilombo!
-		spawnBall(ball.x, ball.y, new FastVector2(ball.velocity.x,ball.velocity.y));
+		gottaSpawnNewBalls = true;
+		nextSpawnPosition = new FastVector2(ball.x, ball.y);
+		scoreText.text = "Score " + ++score;
+		Console.log(score);
 	}
 
 	function ballVsFrame(enemyC:ICollider, frame){
@@ -93,6 +120,6 @@ class GameState extends State {
 	}
 
 	function playerVsEnemy(playerC:ICollider, invaderC:ICollider) {
-		changeState(new EndGame(false));
+		changeState(new EndGame(false, score));
 	}
 }

@@ -15,9 +15,11 @@ import states.GameState;
 
 class EndGame extends State {
 
+    var score:Float;
     var winState:Bool;
-    public function new(winState:Bool){
+    public function new(winState:Bool, score:Float){
         this.winState = winState;
+        this.score = score;
         super();
     }
     override function load(resources:Resources) {
@@ -29,22 +31,31 @@ class EndGame extends State {
 
     override function init() {
         this.stageColor(0.5,0.5,0.5);
-         var text=new Text("Kenney_Thick");
-         text.smooth=true;
-           text.x = Screen.getWidth()*0.5-50;
-           text.y = Screen.getHeight()*0.5;
-           text.text="win"; 
-           stage.addChild(text);
         if(winState){
           
         }else{
-           var image=new Sprite("gameOver");
-            image.scaleX=4;
-            image.scaleY=4;
-            image.smooth=false;
-           image.x=200;
-           image.y=200;
-           stage.addChild(image);
+            var gameOverText=new Text("Kenney_Thick");
+            gameOverText.smooth=true;
+            gameOverText.x = Screen.getWidth()*0.5-150;
+            gameOverText.y = Screen.getHeight()*0.5;
+            gameOverText.text="Game Over"; 
+
+            var scoreText=new Text("Kenney_Thick");
+            scoreText.smooth=true;
+            scoreText.x = Screen.getWidth()*0.5-150;
+            scoreText.y = Screen.getHeight()*0.5 + 25;
+            scoreText.text="Score " + score; 
+       
+
+            var continueText=new Text("Kenney_Thick");
+            continueText.smooth=true;
+            continueText.x = Screen.getWidth()*0.5-150;
+            continueText.y = Screen.getHeight()*0.5 + 50;
+            continueText.text="Press space to play again" ; 
+
+            stage.addChild(gameOverText);
+            stage.addChild(scoreText);
+            stage.addChild(continueText);
         }
        
     }
