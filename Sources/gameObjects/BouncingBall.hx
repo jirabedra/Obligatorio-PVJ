@@ -10,12 +10,20 @@ import js.html.Console;
 class BouncingBall extends Entity {
 
     var ball : Sprite;
-    var velocity:FastVector2;
-    var position:FastVector2;
-    private static inline var RADIO = 20;
+    public var velocity:FastVector2;
+    private var RADIO = 20;
     public var collision:CollisionBox;
+    public var speed:Float = 256;
 
+    public var x(get, null):Float;
+	private inline function get_x():Float{
+		return ball.x;
+	}
 
+	public var y(get, null):Float;
+	private inline function get_y():Float{
+		return ball.y;
+	}
 
 	public function new(x:Float, y:Float, layer:Layer, collisionGroup:CollisionGroup) {
 		super();
@@ -34,12 +42,17 @@ class BouncingBall extends Entity {
         collisionGroup.add(collision);
 		collision.userData = this;
 
+        velocity = new FastVector2(1,1);
 
 	}
 
 	override function update(dt:Float) {
 		super.update(dt);
 		collision.update(dt);
+        velocity.setFrom(velocity.normalized());
+
+        collision.velocityX = velocity.x * speed;
+		collision.velocityY = velocity.y * speed;
 	}
 
 	override function render() {
@@ -52,7 +65,18 @@ class BouncingBall extends Entity {
 		super.destroy();
         ball.removeFromParent();
         collision.removeFromParent();
-
-
 	}
+
+    public function bounce(name:String){
+        switch(name){
+            case "top": 
+                velocity.y *= -1;
+            case "bottom": 
+                velocity.y *= -1;
+            case "right": 
+                velocity.x *= -1;
+            case "left": 
+                velocity.x *= -1;
+        }
+    }
 }

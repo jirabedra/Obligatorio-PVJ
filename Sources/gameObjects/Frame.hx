@@ -18,14 +18,15 @@ class Frame {
         _screenHeight = screenHeight;
         _screenWidth = screenWidth;
 
-        _edges.top = initCollisionBox('horizontal', { x: 0, y: 0 });
-        _edges.left = initCollisionBox('vertical', { x: 0, y: 0 });
-        _edges.bottom = initCollisionBox('horizontal', { x: 0, y: screenHeight });
-        _edges.right = initCollisionBox('vertical', { x: screenWidth, y: 0 });
+        _edges.top = initCollisionBox("top", 'horizontal', { x: 0, y: 0 });
+        _edges.left = initCollisionBox("left", 'vertical', { x: 0, y: 0 });
+        _edges.bottom = initCollisionBox("bottom", 'horizontal', { x: 0, y: screenHeight });
+        _edges.right = initCollisionBox("right", 'vertical', { x: screenWidth, y: 0 });
     }
 
-    private function initCollisionBox(orientation: String, position: { x: Int, y: Int }) {
+    private function initCollisionBox(name:String, orientation: String, position: { x: Int, y: Int }) {
 		var box = new CollisionBox();
+        box.userData = name;
 
         box.width = orientation == 'horizontal' ? _screenWidth : 0;
 		box.height = orientation == 'vertical' ? _screenHeight : 0;

@@ -4,6 +4,7 @@ import com.loading.basicResources.ImageLoader;
 import com.loading.Resources;
 import com.gEngine.GEngine;
 import js.html.Console;
+import kha.math.FastVector2;
 import gameObjects.Frame;
 import com.collision.platformer.ICollider;
 import com.collision.platformer.CollisionGroup;
@@ -27,7 +28,6 @@ class GameState extends State {
 
 	var enemyCollision:CollisionGroup=new CollisionGroup();
 	var frame: Frame;
-	var ball: BouncingBall;
 
 	var display: RectangleDisplay;
 	
@@ -42,13 +42,17 @@ class GameState extends State {
 		addChild(player);
 		GlobalGameData.player=player;
 
-		ball = new BouncingBall(screenWidth / 2, screenHeight / 2, simulationLayer, enemyCollision );
-		addChild(ball);
+		spawnBall(screenWidth / 2, screenHeight / 2, new FastVector2(1,1));
 
 		frame = new Frame(screenHeight, screenWidth);
 
+	}
 
 
+	function spawnBall(x:Float, y:Float, velocity:FastVector2){
+		var ball = new BouncingBall(x, y, simulationLayer, enemyCollision );
+		ball.velocity = velocity;
+		addChild(ball);
 	}
 
 	override function load(resources:Resources) {
@@ -62,8 +66,10 @@ class GameState extends State {
 
 		frame.update(dt);
 		frame.collide(player.collision, playerVsFrame);
+		frame.collide(enemyCollision, ballVsFrame);
 		
-		CollisionEngine.overlap(player.bulletsCollision, enemyCollision, bulletVsBall);
+		CollisionEngine.overlap(player.collision, enemyCollision, playerVsEnemy);
+		CollisionEngine.collide(player.bulletsCollision, enemyCollision, bulletVsBall);
 	}
 
 
@@ -72,11 +78,21 @@ class GameState extends State {
 	}
 
 	function bulletVsBall(bulletC:ICollider,ballC:ICollider){
-		Console.log("ONEGAI");
 		var bullet:Bullet=cast bulletC.userData;
-		bullet.die();
 		var ball:BouncingBall=cast ballC.userData;
+		bullet.die();
 		ball.die();
+		//La linea siguiente es la que causa quilombo!
+		spawnBall(ball.x, ball.y, new FastVector2(ball.velocity.x,ball.velocity.y));
 	}
-	
+
+	function ballVsFrame(enemyC:ICollider, frame){
+		var enemy:BouncingBall=cast enemyC.userData;
+		var frame:String=cast frame.userData;
+		enemy.bounce(frame);
+	}
+
+	function playerVsEnemy(playerC:ICollider, invaderC:ICollider) {
+		changeState(new EndGame(false));
+	}
 }
